@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "gg.playit.playitforge.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "playitforge.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
