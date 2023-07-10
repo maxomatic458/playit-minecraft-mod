@@ -1,6 +1,6 @@
 # Playit.gg Minecraft Forge mod
 
-This is an **un**official Minecraft mod that allows you to make a forge server public using the [Playit.gg](https://playit.gg) network, without having to port forward.
+This is an **un**official mod that allows you to make a forge server public using the [Playit.gg](https://playit.gg) network, without having to port forward.
 
 ## Installation
 
