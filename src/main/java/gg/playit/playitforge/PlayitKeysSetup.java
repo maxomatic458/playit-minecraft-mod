@@ -1,9 +1,8 @@
 package gg.playit.playitforge;
+
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-
-
 import gg.playit.playitforge.utils.Hex;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;

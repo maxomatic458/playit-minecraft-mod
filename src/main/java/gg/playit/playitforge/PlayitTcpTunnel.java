@@ -1,8 +1,6 @@
 package gg.playit.playitforge;
 
 import com.mojang.logging.LogUtils;
-import gg.playit.playitforge.PlayitConnectionTracker;
-import gg.playit.playitforge.ReflectionHelper;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import net.minecraft.server.MinecraftServer;
