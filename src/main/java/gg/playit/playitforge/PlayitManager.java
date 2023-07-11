@@ -1,10 +1,14 @@
 package gg.playit.playitforge;
 
 import gg.playit.ChatColor;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
+
 import gg.playit.api.ApiClient;
 import gg.playit.api.models.Notice;
 import gg.playit.control.PlayitControlChannel;
@@ -106,9 +110,14 @@ public class PlayitManager implements Runnable {
                 var code = setup.getClaimCode();
                 if (code != null) {
                     var playerList = playitForge.server.getPlayerList();
-                    for (Entity player : playerList.getPlayers()) {
+                    for (ServerPlayer player : playerList.getPlayers()) {
                         if (player.hasPermissions(3)) {
-                            player.sendSystemMessage(Component.literal("Visit " + ChatColor.RED + "https://playit.gg/mc/" + code + ChatColor.RESET + " to setup playit"));
+                            // clickable link
+                            var url = "https://playit.gg/mc/" + code;
+                            var msg = Component.literal("Click " + ChatColor.RED + "here" + ChatColor.RESET + " to setup your playit.gg tunnel")
+                                .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
+                            
+                            player.sendSystemMessage(msg);
                         } else {
                             player.sendSystemMessage(Component.literal("Check server logs to get playit.gg claim link to setup tunnel (or be a Server Operator)"));
                         }

@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -28,8 +29,8 @@ public class PlayitForge {
     public static final String MODID = "playit_forge";
     private static final Logger log = LogUtils.getLogger();
     final EventLoopGroup eventGroup = new NioEventLoopGroup();
-    private final Object managerSync = new Object();
-    private volatile PlayitManager playitManager;
+    final Object managerSync = new Object();
+    volatile PlayitManager playitManager;
 
     MinecraftServer server;
 
@@ -45,9 +46,17 @@ public class PlayitForge {
     }
 
     @SubscribeEvent
+    public void onRegisterCommands(RegisterCommandsEvent event) {
+        PlayitCommand playitCommand = new PlayitCommand(this);
+        playitCommand.register(event.getDispatcher());
+
+        log.info("registered playit command");
+    }
+
+    @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         server = event.getServer();
-        if (server.isDedicatedServer()) {
+        if (server.isDedicatedServer() && PlayitForgeConfig.CFG_AUTOSTART.get()) {
             var secretKey = PlayitForgeConfig.CFG_AGENT_SECRET_KEY.get();
             resetConnection(secretKey);
         }
@@ -57,6 +66,10 @@ public class PlayitForge {
     public void onPlayerJoin(PlayerLoggedInEvent event) {
         Entity player = event.getEntity();
         PlayitManager manager = playitManager;
+        
+        if (manager == null) {
+            return;
+        }
 
         if (player.hasPermissions(3)) {
             if (manager.isGuest()) {
@@ -81,10 +94,10 @@ public class PlayitForge {
         }
     }
 
-    private void resetConnection(String secretKey) {
+    void resetConnection(String secretKey) {
         if (secretKey != null) {
             PlayitForgeConfig.CFG_AGENT_SECRET_KEY.set(secretKey);
-            PlayitForgeConfig.SPEC.save();
+            PlayitForgeConfig.CFG_AGENT_SECRET_KEY.save();
         }
 
         synchronized (managerSync) {

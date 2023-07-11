@@ -6,6 +6,7 @@ public class PlayitForgeConfig {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.ConfigValue<String> CFG_AGENT_SECRET_KEY;
     public static final ForgeConfigSpec.ConfigValue<Integer> CFG_CONNECTION_TIMEOUT_SECONDS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CFG_AUTOSTART;
 
     static {
         BUILDER.push("Config for PlayitForge");
@@ -15,7 +16,11 @@ public class PlayitForgeConfig {
                 .define("agent-secret", "");
 
         CFG_CONNECTION_TIMEOUT_SECONDS = BUILDER
-                .define("mc-timeout-sec", 3);
+                .define("mc-timeout-sec", 30);
+
+        CFG_AUTOSTART = BUILDER
+                .comment("Automatically start the playit-tunnel when the server starts")
+                .define("autostart", true);
 
         SPEC = BUILDER.build();
     }
