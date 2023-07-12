@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "playit_fabric",
+	"version": "${version}",
+	"name": "Playit Fabric",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Maxomatic458"
+	],
+	"contact": {
+		"homepage": "https://github.com/maxomatic458/playit-minecraft-mod",
+		"sources": "https://github.com/maxomatic458/playit-minecraft-mod"
+	},
+	"license": "MIT License",
+	"icon": "assets/playit_fabric/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"server" : [
+			"gg.playit.playitfabric.PlayitFabric"
+		] 
+	},
+	"mixins": [
+		"playit_fabric.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.6",
+		"fabric": "*",
+		"minecraft": ">=1.19",
+		"java": ">=17"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

@@ -1,0 +1,12 @@
+forge/bin
+forge/build
+forge/run
+forge/.gradle
+
+fabric/bin
+fabric/build
+fabric/run
+fabric/.gradle
+
+.vscode
+.idea
