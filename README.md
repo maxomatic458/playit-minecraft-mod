@@ -1,11 +1,11 @@
-# Playit.gg Minecraft Forge mod
+# Playit.gg Minecraft mod
 
-This is an **un**official mod that allows you to make a forge server public using the [Playit.gg](https://playit.gg) network, without having to port forward.
+This is an **un**official server-side mod that allows you to make a modded server (fabric and forge) public using the [Playit.gg](https://playit.gg) network, without having to port forward.
 
 ## Installation
 
 1. Download the latest release from [here](https://github.com/maxomatic458/playit-forge/releases/latest)
-
+   (fabric version requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api))
 2. Put the downloaded jar file into your mods folder
 
 3. Follow the instructions in your chat/server console
