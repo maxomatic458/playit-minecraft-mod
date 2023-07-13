@@ -3,7 +3,7 @@
 	"id": "playit_fabric",
 	"version": "${version}",
 	"name": "Playit Fabric",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Make your server public without port forwarding with a static IP",
 	"authors": [
 		"Maxomatic458"
 	],
