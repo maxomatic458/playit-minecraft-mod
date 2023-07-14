@@ -1,5 +1,6 @@
 package gg.playit.playitfabric.config;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
@@ -9,12 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import com.mojang.logging.LogUtils;
-
 public class PlayitFabricConfig {
-    private static Logger log = LogUtils.getLogger();
-
     private static final String CFG_FILENAME = "playit-fabric-config.cfg";
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve(CFG_FILENAME);;
 
@@ -29,10 +25,10 @@ public class PlayitFabricConfig {
     private PlayitFabricConfig() {
         CFG_AGENT_SECRET_KEY = "";
         CFG_CONNECTION_TIMEOUT_SECONDS = 30;
-        CFG_AUTOSTART = true;
+        CFG_AUTOSTART = FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER; // server: true, client: false
     }
 
-public static PlayitFabricConfig load() {
+    public static PlayitFabricConfig load() {
         PlayitFabricConfig config = new PlayitFabricConfig();
 
         try {
