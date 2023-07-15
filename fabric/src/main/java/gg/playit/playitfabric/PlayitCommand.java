@@ -32,7 +32,8 @@ public class PlayitCommand {
                 || 
                 (!source.getServer().isDedicated()
                 && source.getPlayer().getUuid() == source.getServer().getHostProfile().getId()
-                && playitFabric.client.isIntegratedServerRunning())
+                // && playitFabric.client.isIntegratedServerRunning()
+                )
             )
             .then(literal("open-lan")
                 .executes(ctx -> openLan(ctx.getSource()))

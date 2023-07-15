@@ -115,7 +115,7 @@ public class PlayitManager implements Runnable {
                 if (code != null) {
                     var playerList = playitFabric.server.getPlayerManager().getPlayerList();
                     for (ServerPlayerEntity player : playerList) {
-                        if (player.hasPermissionLevel(3)) {
+                        if (player.hasPermissionLevel(3) || player.getUuid() == playitFabric.server.getHostProfile().getId()) {
                             // clickable link
                             var url = "https://playit.gg/mc/" + code;
                             var msg = Text.literal("Click " + ChatColor.RED + "here" + ChatColor.RESET + " to setup your playit.gg tunnel")
