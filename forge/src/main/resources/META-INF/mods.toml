@@ -39,7 +39,7 @@ displayURL="https://github.com/maxomatic458/playit-minecraft-mod" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
-Make your server public without port forwarding with a static IP
+Make your server (or lan world) public without port forwarding with a static IP
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.playit-forge]] #optional
@@ -52,7 +52,7 @@ versionRange = "[41,)" #mandatory
 # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
 ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT or SERVER
-side = "SERVER"
+side = "BOTH"
 # Here's another dependency
 [[dependencies.playit-forge]]
 modId = "minecraft"

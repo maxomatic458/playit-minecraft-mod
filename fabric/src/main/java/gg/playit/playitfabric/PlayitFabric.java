@@ -56,6 +56,10 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 			onDedicatedServerStart(server);
 		});
 
+		ServerLifecycleEvents.SERVER_STOPPED.register((MinecraftServer server) -> {
+			onServerStop(server);
+		});
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			onRegisterCommands(dispatcher, registryAccess, environment);
 		});
@@ -67,6 +71,10 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 
 		ServerLifecycleEvents.SERVER_STARTED.register((MinecraftServer server) -> {
 			this.server = server;
+		});
+		
+		ServerLifecycleEvents.SERVER_STOPPED.register((MinecraftServer server) -> {
+			onServerStop(server);
 		});
 
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
@@ -87,6 +95,15 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 		}
 	}
 
+	public void onServerStop(MinecraftServer server) {
+		// server & client
+		log.info("stopping playit");
+		if (playitManager != null) {
+			playitManager.shutdown();
+			playitManager = null;
+		}
+	}
+
 	public void onLanServerStart(MinecraftServer server) {
 		if (!server.isDedicated() && config.CFG_AUTOSTART && client != null) {
 			makeLanPublic();
@@ -96,7 +113,7 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 	public void onPlayerJoinDedicated(ServerPlayerEntity player) {
 		PlayitManager manager = playitManager;
 
-		if (manager == null) {
+		if (manager == null || server == null) {
 			return;
 		}
 
@@ -118,6 +135,8 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 	public void onRegisterCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
 		PlayitCommand playitCommand = new PlayitCommand(this);
 		playitCommand.register(dispatcher);
+
+		log.info("registered playit command");
 	}
 
     void resetConnection(String secretKey) {
@@ -152,7 +171,7 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 		boolean cheatsAllowed = server.getPlayerManager().areCheatsAllowed();
 		
 		if (playitManager != null) {
-			client.player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "playit is already running"));
+			client.player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "playit.gg is already running"));
 			return;
 		}
 

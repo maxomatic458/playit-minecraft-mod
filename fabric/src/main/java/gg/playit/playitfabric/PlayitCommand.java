@@ -31,9 +31,7 @@ public class PlayitCommand {
                 (source.hasPermissionLevel(3) && source.getServer().isDedicated())
                 || 
                 (!source.getServer().isDedicated()
-                && source.getPlayer().getUuid() == source.getServer().getHostProfile().getId()
-                // && playitFabric.client.isIntegratedServerRunning()
-                )
+                && source.getPlayer().getUuid() == source.getServer().getHostProfile().getId())
             )
             .then(literal("open-lan")
                 .executes(ctx -> openLan(ctx.getSource()))
@@ -97,9 +95,8 @@ public class PlayitCommand {
     }
 
     private int openLan(ServerCommandSource source) {
-
         if (playitFabric.server.isDedicated()) {
-            source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "this command is only available in singleplayer"), false);
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "this command is only available in singleplayer"));
             return 0;
         }
 
@@ -113,10 +110,10 @@ public class PlayitCommand {
         if (manager == null) {
             String currentSecret = playitFabric.config.CFG_AGENT_SECRET_KEY;
             if (currentSecret == null || currentSecret.isEmpty()) {
-                source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Secret key not set"), false);
+                source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Secret key not set"));
                 return 0;
             }
-            source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "playit status: offline (or shutting down)"), false);
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "playit status: offline (or shutting down)"));
             return 0;
         }
         String message = switch (manager.state()) {
@@ -187,7 +184,7 @@ public class PlayitCommand {
         }
 
         if (valueCfg == null || valueCfg.isEmpty() || valueCurrent == null || valueCurrent.isEmpty()) {
-            source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + prop + "is not set"), false);
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + prop + "is not set"));
             return 0;
         }
         source.sendFeedback(Text.literal(ChatColor.BLUE + prop + ChatColor.RESET + " current: " + valueCurrent + ", config: " + valueCfg), false);
@@ -204,7 +201,7 @@ public class PlayitCommand {
             }
 
             default -> {
-                source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Unknown property " + prop), false);
+                source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Unknown property " + prop));
                 return 0;
             }
         }
@@ -227,11 +224,11 @@ public class PlayitCommand {
                 source.sendFeedback(Text.literal(ChatColor.BLUE + "tunnel address: " + ChatColor.RESET + address), false);
                 return 0;
             }
-            source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel address is not set"), false);
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel address is not set"));
             return 0;
         }
 
-        source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel is not running"), false);
+        source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel is not running"));
         return 0;
 
     }
@@ -240,7 +237,7 @@ public class PlayitCommand {
         String secret = playitFabric.config.CFG_AGENT_SECRET_KEY;
 
         if (secret == null || secret.isEmpty()) {
-            source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "secret is not set"), false);
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "secret is not set"));
             return 0;
         }
         
@@ -259,7 +256,7 @@ public class PlayitCommand {
             
             } catch (ApiError e) {
                 log.warn("failed to create guest secret: " + e);
-                source.sendFeedback(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "failed to create guest secret: " + e.getMessage()), false);
+                source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "failed to create guest secret: " + e.getMessage()));
             } catch (IOException e) {
                 log.error("failed to create guest secret: " + e);
             }
