@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 
 @Mod(PlayitForge.MODID)
 public class PlayitForge {
-
     public static final String MODID = "playit_forge";
     private static final Logger log = LogUtils.getLogger();
     final EventLoopGroup eventGroup = new NioEventLoopGroup();

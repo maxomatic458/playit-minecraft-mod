@@ -1,10 +1,5 @@
 package gg.playit.playitfabric;
 
-// import net.minecraft.network.chat.ClickEvent;
-// import net.minecraft.network.chat.Component;
-// import net.minecraft.network.chat.Style;
-// import net.minecraft.server.level.ServerPlayer;
-// import net.minecraft.world.entity.Entity;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
@@ -13,7 +8,7 @@ import gg.playit.api.models.Notice;
 import gg.playit.control.PlayitControlChannel;
 import gg.playit.messages.ControlFeedReader;
 import gg.playit.playitfabric.utils.ChatColor;
-// import gg.playit.playitfabric.config.PlayitFabricConfig;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;

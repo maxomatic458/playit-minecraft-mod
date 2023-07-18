@@ -35,7 +35,7 @@ This mod will make your server, or singleplayer world public using the [Playit.g
 
 ``mc-timeout-secs`` timeout in seconds for the tunnel channel (default 30s)
 
-``autostart`` wether playit should automatically start with your server or singleplayer world (default server: true, client: false)
+``autostart`` whether playit should automatically start with your server or singleplayer world (default server: true, client: false)
 
 ### Other Links
 * [Playit bukkit plugin](https://www.spigotmc.org/resources/playit-gg.105566/) (this mod is basically a forge translation of this plugin)
