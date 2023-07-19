@@ -176,6 +176,7 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 		}
 
 		if (server.isRemote()) {
+			server.setServerIp("127.0.0.1");
 			client.player.sendMessage(Text.literal("attaching tunnel to existing lan server"));
 		} else {
 			server.openToLan(defaultGameMode, cheatsAllowed, NetworkUtils.findLocalPort());

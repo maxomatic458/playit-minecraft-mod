@@ -177,6 +177,7 @@ public class PlayitForge {
         }
 
         if (server.isPublished()) {
+            server.setLocalIp("127.0.0.1");
             client.player.sendSystemMessage(Component.literal("attaching tunnel to existing lan server"));
         } else {
 
