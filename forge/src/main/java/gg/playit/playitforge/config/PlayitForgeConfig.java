@@ -1,5 +1,7 @@
 package gg.playit.playitforge.config;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayitForgeConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -20,7 +22,7 @@ public class PlayitForgeConfig {
 
         CFG_AUTOSTART = BUILDER
                 .comment("Automatically start the playit-tunnel when the server starts")
-                .define("autostart", true);
+                .define("autostart", FMLEnvironment.dist == Dist.DEDICATED_SERVER); // client: false, server: true
 
         SPEC = BUILDER.build();
     }

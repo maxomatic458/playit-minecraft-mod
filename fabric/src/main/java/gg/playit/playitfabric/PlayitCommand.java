@@ -1,7 +1,6 @@
 package gg.playit.playitfabric;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -11,26 +10,32 @@ import gg.playit.api.ApiClient;
 import gg.playit.api.ApiError;
 import gg.playit.playitfabric.utils.ChatColor;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-
 import static net.minecraft.server.command.CommandManager.*;
 
 import java.io.IOException;
 import org.slf4j.Logger;
 
 public class PlayitCommand {
-    
-    private static PlayitFabric playitFabric;
+    public PlayitFabric playitFabric;
     private static final Logger log = LogUtils.getLogger();
 
     public PlayitCommand(PlayitFabric playitFabric) {
-        PlayitCommand.playitFabric = playitFabric;
+        this.playitFabric = playitFabric;
     }
 
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+
         dispatcher.register(literal("playit")
-            .requires(source -> source.hasPermissionLevel(3))
+            .requires(source ->
+                (source.hasPermissionLevel(3) && source.getServer().isDedicated())
+                || 
+                (!source.getServer().isDedicated()
+                && source.getPlayer().getUuid() == source.getServer().getHostProfile().getId())
+            )
+            .then(literal("open-lan")
+                .executes(ctx -> openLan(ctx.getSource()))
+            )
             .then(literal("agent")
                 .then(literal("status")
                     .executes(ctx -> getStatus(ctx.getSource()))
@@ -89,17 +94,26 @@ public class PlayitCommand {
         );
     }
 
-    private static int getStatus(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();
+    private int openLan(ServerCommandSource source) {
+        if (playitFabric.server.isDedicated()) {
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "this command is only available in singleplayer"));
+            return 0;
+        }
+
+        playitFabric.makeLanPublic();
+        return 0;
+    }
+
+    private int getStatus(ServerCommandSource source) {
         PlayitManager manager = playitFabric.playitManager;
 
         if (manager == null) {
             String currentSecret = playitFabric.config.CFG_AGENT_SECRET_KEY;
             if (currentSecret == null || currentSecret.isEmpty()) {
-                player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Secret key not set"));
+                source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Secret key not set"));
                 return 0;
             }
-            player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "playit status: offline (or shutting down)"));
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "playit status: offline (or shutting down)"));
             return 0;
         }
         String message = switch (manager.state()) {
@@ -119,22 +133,22 @@ public class PlayitCommand {
             default -> "unknown";
         };
 
-        player.sendMessage(Text.literal(ChatColor.BLUE + "playit status: " + ChatColor.RESET + message));
+        source.sendFeedback(Text.literal(ChatColor.BLUE + "playit status: " + ChatColor.RESET + message), false);
         return 0;
     }
     
-    private static int restart(ServerCommandSource source) {
+    private int restart(ServerCommandSource source) {
         playitFabric.resetConnection(null);
         return 0;
     }
 
-    private static int reset(ServerCommandSource source) {
+    private int reset(ServerCommandSource source) {
         playitFabric.config.setAgentSecret("");
         playitFabric.resetConnection(null);
         return 0;
     }
 
-    private static int shutdown(ServerCommandSource source) {
+    private int shutdown(ServerCommandSource source) {
         synchronized (playitFabric.managerSync) {
             if (playitFabric.playitManager != null) {
                 playitFabric.playitManager.shutdown();
@@ -144,15 +158,13 @@ public class PlayitCommand {
         return 0;
     }
 
-    private static int setSecret(ServerCommandSource source, String secret) {
+    private int setSecret(ServerCommandSource source, String secret) {
         playitFabric.config.setAgentSecret(secret);
         playitFabric.resetConnection(null);
         return 0;
     }
 
-    private static int getProp(ServerCommandSource source, String prop) {
-        ServerPlayerEntity player = source.getPlayer();
-
+    private int getProp(ServerCommandSource source, String prop) {
         String valueCfg;
         String valueCurrent;
         switch (prop) {
@@ -172,16 +184,14 @@ public class PlayitCommand {
         }
 
         if (valueCfg == null || valueCfg.isEmpty() || valueCurrent == null || valueCurrent.isEmpty()) {
-            player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + prop + "is not set"));
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + prop + "is not set"));
             return 0;
         }
-        player.sendMessage(Text.literal(ChatColor.BLUE + prop + ChatColor.RESET + " current: " + valueCurrent + ", config: " + valueCfg));
+        source.sendFeedback(Text.literal(ChatColor.BLUE + prop + ChatColor.RESET + " current: " + valueCurrent + ", config: " + valueCfg), false);
         return 0;
     }
 
-    private static int setProp(ServerCommandSource source, String prop, Object value) {
-        ServerPlayerEntity player = source.getPlayer();
-
+    private int setProp(ServerCommandSource source, String prop, Object value) {
         switch (prop) {
             case "mc-timeout-sec" -> {
                 playitFabric.config.setConnectionTimeoutSeconds((Integer) value);
@@ -191,49 +201,47 @@ public class PlayitCommand {
             }
 
             default -> {
-                player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Unknown property " + prop));
+                source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "Unknown property " + prop));
                 return 0;
             }
         }
 
-        player.sendMessage(Text.literal("set " + ChatColor.BLUE + prop + ChatColor.RESET + " to " + ChatColor.GREEN + value));
+        source.sendFeedback(Text.literal("set " + ChatColor.BLUE + prop + ChatColor.RESET + " to " + ChatColor.GREEN + value), false);
         if (prop == "mc-timeout-sec") {
-            player.sendMessage(Text.literal("run " + ChatColor.GREEN + "/playit agent restart" + ChatColor.RESET + " to apply changes"));
+            source.sendFeedback(Text.literal("run " + ChatColor.GREEN + "/playit agent restart" + ChatColor.RESET + " to apply changes"), false);
             return 0;
         }
-        player.sendMessage(Text.literal("changes will be applied on next restart"));
+        source.sendFeedback(Text.literal("changes will be applied on next restart"), false);
         return 0;
     }
 
-    private static int getTunnelAddress(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();    
+    private int getTunnelAddress(ServerCommandSource source) {
         PlayitManager playitManager = playitFabric.playitManager;
     
         if (playitManager != null) {
             var address = playitManager.getAddress();
             if (address != null) {
-                player.sendMessage(Text.literal(ChatColor.BLUE + "tunnel address: " + ChatColor.RESET + address));
+                source.sendFeedback(Text.literal(ChatColor.BLUE + "tunnel address: " + ChatColor.RESET + address), false);
                 return 0;
             }
-            player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel address is not set"));
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel address is not set"));
             return 0;
         }
 
-        player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel is not running"));
+        source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel is not running"));
         return 0;
 
     }
 
-    private static int getGuestLoginLink(ServerCommandSource source) {
-        ServerPlayerEntity player = source.getPlayer();
+    private int getGuestLoginLink(ServerCommandSource source) {
         String secret = playitFabric.config.CFG_AGENT_SECRET_KEY;
 
         if (secret == null || secret.isEmpty()) {
-            player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "secret is not set"));
+            source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "secret is not set"));
             return 0;
         }
         
-        player.sendMessage(Text.literal("preparing login link..."));
+        source.sendFeedback(Text.literal("preparing login link..."), false);
 
         new Thread(() -> {
             try {
@@ -243,11 +251,12 @@ public class PlayitCommand {
                 var url = "https://playit.gg/login/guest-account/" + session;
                 log.info("generated login url: " + url);
 
-                player.sendMessage(Text.literal("generated login url"));
-                player.sendMessage(Text.literal(ChatColor.BLUE + "URL: " + ChatColor.RESET + url));
+                source.sendFeedback(Text.literal("generated login url"), false);
+                source.sendFeedback(Text.literal(ChatColor.BLUE + "URL: " + ChatColor.RESET + url), false);
+            
             } catch (ApiError e) {
                 log.warn("failed to create guest secret: " + e);
-                player.sendMessage(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "failed to create guest secret: " + e.getMessage()));
+                source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "failed to create guest secret: " + e.getMessage()));
             } catch (IOException e) {
                 log.error("failed to create guest secret: " + e);
             }

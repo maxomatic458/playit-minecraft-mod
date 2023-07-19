@@ -3,7 +3,7 @@
 	"id": "playit_fabric",
 	"version": "${version}",
 	"name": "Playit Fabric",
-	"description": "Make your server public without port forwarding with a static IP",
+	"description": "Make your server (or lan world) public without port forwarding with a static IP",
 	"authors": [
 		"Maxomatic458"
 	],
@@ -17,7 +17,10 @@
 	"entrypoints": {
 		"server" : [
 			"gg.playit.playitfabric.PlayitFabric"
-		] 
+		],
+		"client" : [
+			"gg.playit.playitfabric.PlayitFabric"
+		]
 	},
 	"mixins": [
 		"playit_fabric.mixins.json"
@@ -25,7 +28,7 @@
 	"depends": {
 		"fabricloader": ">=0.14.6",
 		"fabric": "*",
-		"minecraft": ">=1.19",
+		"minecraft": ">=1.19 <1.20",
 		"java": ">=17"
 	},
 	"suggests": {

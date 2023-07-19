@@ -115,7 +115,7 @@ public class PlayitKeysSetup {
                 for (AccountTunnel tunnel : tunnels.tunnels) {
                     if (tunnel.tunnelType == TunnelType.MinecraftJava) {
                         keys.tunnelAddress = tunnel.displayAddress;
-                        log.info("found minecraft java tunnel: " + keys.tunnelAddress);
+                        log.info("found minecraft java tunnel: " + keys.tunnelAddress.replace("craft.ply.gg", "joinmc.link"));
                         return keys;
                     }
                 }

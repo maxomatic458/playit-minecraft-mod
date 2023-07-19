@@ -9,7 +9,7 @@ modLoader = "javafml" #mandatory
 loaderVersion = "[41,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
-license = "MIT Licencse"
+license = "MIT License"
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/maxomatic458/playit-minecraft-mod/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -39,7 +39,7 @@ displayURL="https://github.com/maxomatic458/playit-minecraft-mod" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
-Make your server public without port forwarding with a static IP
+Make your server (or lan world) public without port forwarding with a static IP
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.playit-forge]] #optional
@@ -48,16 +48,16 @@ modId = "forge" #mandatory
 # Does this dependency have to exist - if not, ordering below must be specified
 mandatory = true #mandatory
 # The version range of the dependency
-versionRange = "[41,)" #mandatory
+versionRange = ">=41" #mandatory
 # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
 ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT or SERVER
-side = "SERVER"
+side = "BOTH"
 # Here's another dependency
 [[dependencies.playit-forge]]
 modId = "minecraft"
 mandatory = true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-versionRange = "[1.19,1.19.1,1.19.2,1.19.3,1.19.4,1.20)"
+versionRange = ">=1.19"
 ordering = "NONE"
 side = "BOTH"
