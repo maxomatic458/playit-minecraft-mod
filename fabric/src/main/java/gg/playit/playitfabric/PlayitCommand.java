@@ -133,7 +133,7 @@ public class PlayitCommand {
             default -> "unknown";
         };
 
-        source.sendFeedback(Text.literal(ChatColor.BLUE + "playit status: " + ChatColor.RESET + message), false);
+        source.sendFeedback(() -> Text.literal(ChatColor.BLUE + "playit status: " + ChatColor.RESET + message), false);
         return 0;
     }
     
@@ -187,7 +187,7 @@ public class PlayitCommand {
             source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + prop + "is not set"));
             return 0;
         }
-        source.sendFeedback(Text.literal(ChatColor.BLUE + prop + ChatColor.RESET + " current: " + valueCurrent + ", config: " + valueCfg), false);
+        source.sendFeedback(() -> Text.literal(ChatColor.BLUE + prop + ChatColor.RESET + " current: " + valueCurrent + ", config: " + valueCfg), false);
         return 0;
     }
 
@@ -206,12 +206,12 @@ public class PlayitCommand {
             }
         }
 
-        source.sendFeedback(Text.literal("set " + ChatColor.BLUE + prop + ChatColor.RESET + " to " + ChatColor.GREEN + value), false);
+        source.sendFeedback(() -> Text.literal("set " + ChatColor.BLUE + prop + ChatColor.RESET + " to " + ChatColor.GREEN + value), false);
         if (prop == "mc-timeout-sec") {
-            source.sendFeedback(Text.literal("run " + ChatColor.GREEN + "/playit agent restart" + ChatColor.RESET + " to apply changes"), false);
+            source.sendFeedback(() -> Text.literal("run " + ChatColor.GREEN + "/playit agent restart" + ChatColor.RESET + " to apply changes"), false);
             return 0;
         }
-        source.sendFeedback(Text.literal("changes will be applied on next restart"), false);
+        source.sendFeedback(() -> Text.literal("changes will be applied on next restart"), false);
         return 0;
     }
 
@@ -221,7 +221,7 @@ public class PlayitCommand {
         if (playitManager != null) {
             var address = playitManager.getAddress();
             if (address != null) {
-                source.sendFeedback(Text.literal(ChatColor.BLUE + "tunnel address: " + ChatColor.RESET + address), false);
+                source.sendFeedback(() -> Text.literal(ChatColor.BLUE + "tunnel address: " + ChatColor.RESET + address), false);
                 return 0;
             }
             source.sendError(Text.literal(ChatColor.RED + "ERROR: " + ChatColor.RESET + "tunnel address is not set"));
@@ -241,7 +241,7 @@ public class PlayitCommand {
             return 0;
         }
         
-        source.sendFeedback(Text.literal("preparing login link..."), false);
+        source.sendFeedback(() -> Text.literal("preparing login link..."), false);
 
         new Thread(() -> {
             try {
@@ -251,8 +251,8 @@ public class PlayitCommand {
                 var url = "https://playit.gg/login/guest-account/" + session;
                 log.info("generated login url: " + url);
 
-                source.sendFeedback(Text.literal("generated login url"), false);
-                source.sendFeedback(Text.literal(ChatColor.BLUE + "URL: " + ChatColor.RESET + url), false);
+                source.sendFeedback(() -> Text.literal("generated login url"), false);
+                source.sendFeedback(() -> Text.literal(ChatColor.BLUE + "URL: " + ChatColor.RESET + url), false);
             
             } catch (ApiError e) {
                 log.warn("failed to create guest secret: " + e);

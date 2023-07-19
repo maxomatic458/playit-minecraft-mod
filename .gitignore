@@ -7,6 +7,6 @@ fabric/bin
 fabric/build
 fabric/run
 fabric/.gradle
-
+fabric/remappedSrc
 .vscode
 .idea
