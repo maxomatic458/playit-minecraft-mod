@@ -117,7 +117,7 @@ public class PlayitFabric implements DedicatedServerModInitializer, ClientModIni
 			return;
 		}
 
-		if (player.hasPermissionLevel(3) || player.getUuid() == server.getHostProfile().getId()) {
+		if (player.hasPermissionLevel(3)) {
 			if (manager.isGuest()) {
                 player.sendMessage(Text.literal(ChatColor.RED + "WARNING:" + ChatColor.RESET + " playit.gg is running with a guest account"));
             } else if (!manager.emailVerified()) {
