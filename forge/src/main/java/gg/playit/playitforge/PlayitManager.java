@@ -112,7 +112,7 @@ public class PlayitManager implements Runnable {
                 if (code != null) {
                     var playerList = playitForge.server.getPlayerList();
                     for (ServerPlayer player : playerList.getPlayers()) {
-                        if (player.hasPermissions(3) || player.getUUID().equals(playitForge.server.getSingleplayerProfile().getId())) {
+                        if (player.hasPermissions(3) || (!playitForge.server.isDedicatedServer() && player.getUUID().equals(playitForge.server.getSingleplayerProfile().getId()))) {
                             // clickable link
                             var url = "https://playit.gg/mc/" + code;
                             var msg = Component.literal("Click " + ChatColor.RED + "here" + ChatColor.RESET + " to setup your playit.gg tunnel")
