@@ -3,6 +3,7 @@
 **Disclaimer**: This is an unofficial mod and is not affiliated with Playit.gg.
 
 [Modrinth Page](https://modrinth.com/mod/playit-gg)
+[Curseforge Page](https://legacy.curseforge.com/minecraft/mc-mods/playit-gg)
 
 This mod will make your server, or singleplayer world public using the [Playit.gg](https://playit.gg) network, without having to port forward.
 
